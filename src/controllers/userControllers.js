@@ -52,8 +52,8 @@ export const addNewUser = async (req, res) => {
       bio,
       website,
       pronoun,
+      location,
     } = req.body;
-    1;
     //validación de campos NOT NULL
     if (!username || !given_name || !family_name || !email || !password_hash) {
       return res
@@ -103,6 +103,7 @@ export const updateUser = async (req, res) => {
       bio,
       website,
       pronoun,
+      location,
     } = req.body;
 
     //Voy a validar si el usuario que hace la petición existe
@@ -163,9 +164,7 @@ export const deleteUser = async (req, res) => {
         message: "User not found ❌",
       });
     }
-
     await User.deleteUser(id);
-
     res.json({
       success: true,
       message: "Usuario eliminado para siempre, siempre, siempre, siempre.",

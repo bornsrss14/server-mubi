@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 
 import userRoutes from "./routes/userRoutes.js";
+import fourFavRoutes from "./routes/fourFavRoutes.js";
 
 const app = express();
 
@@ -14,7 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // mi ruta para usuarios
 app.use("/api/users", userRoutes);
-
+app.use("/api/four", fourFavRoutes);
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Endpoint not found",
+  });
+});
 // rutas de prueba
 app.get("/", (req, res) => {
   res.json({ message: "Mi API está funcionando" });

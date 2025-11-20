@@ -11,6 +11,7 @@ class User {
     const [rows] = await db.query("SELECT * from User ORDER BY id DESC");
     return rows;
   }
+
   /*2. Obtener Usuario por ID */
   static async getUserById(id) {
     const [rows] = await db.query("SELECT * FROM User WHERE id = ?", [id]);
@@ -32,12 +33,10 @@ class User {
       family_name,
       website,
       pronoun,
+      location,
     } = userData;
-    /*
-    const { name, email, phone_number, address } = userData;
-     */
     const [result] = await db.query(
-      "INSERT INTO User ( username, email, password_hash,profile_pic_url, bio, given_name, family_name, website, pronoun) VALUES (?,?,?,?, ?,?,?,?,?)",
+      "INSERT INTO User ( username, email, password_hash,profile_pic_url, bio, given_name, family_name, website, pronoun, location) VALUES (?,?,?,?, ?,?,?,?,?, ?)",
       [
         username,
         email,
@@ -48,6 +47,7 @@ class User {
         family_name,
         website,
         pronoun,
+        location,
       ]
     );
     return result.insertId;
