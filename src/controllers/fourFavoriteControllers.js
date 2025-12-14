@@ -51,10 +51,10 @@ export const deleteFourMubi = async (req, res) => {
 
     const deleted = await FavoriteFourMovies.deleteFourById(id);
     if (deleted === 0) {
-      return res.status(404).json({ succes: false, message: "Not found" });
+      return res.status(404).json({ success: false, message: "Not found" });
     }
     res.json({
-      succes: true,
+      success: true,
       message: "Movie deleted from your four favorite movies",
     });
   } catch (error) {
@@ -81,12 +81,12 @@ export const deleteByUserAndMubi = async (req, res) => {
       });
     }
     res.json({
-      succes: true,
+      success: true,
       message: "Movie deleted from the selected user",
     });
   } catch (error) {
     res.status(500).json({
-      succes: false,
+      success: false,
       message: "There's no match four your req",
       error: error.message,
     });
@@ -98,7 +98,7 @@ export const addFourMubi = async (req, res) => {
     //validacion de campos not null
     if (!id_mubi || !id_user) {
       return res.status(400).json({
-        succes: false,
+        success: false,
         message: "Estos campos son requeridos",
       });
     }
@@ -111,14 +111,14 @@ export const addFourMubi = async (req, res) => {
     console.log(existingRelation);
     if (existingRelation.length > 0) {
       return res.status(409).json({
-        succes: false,
+        success: false,
         message: "The movie is already added in your four favorite movies",
       });
     }
     const newFavoriteFour = await FavoriteFourMovies.addFour(req.body);
 
     return res.status(201).json({
-      succes: true,
+      success: true,
       message: "Movie added succesfully 📩",
       data: newFavoriteFour,
     });
@@ -128,7 +128,7 @@ export const addFourMubi = async (req, res) => {
       error
     );
     return res.status(500).json({
-      succes: false,
+      success: false,
       message: "Error del servidor",
     });
   }

@@ -21,10 +21,10 @@ const promisePool = pool.promise();
 /* Verificar y error handling conexión */
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error("Error al conectar a la base de datos (╯°□°）╯︵ ┻━┻ ");
+    console.error("Error trying to connect to db (╯°□°）╯︵ ┻━┻ ");
     return;
   }
-  console.log("Conexión establecida a MySQL en AWS RDS (＾▽＾)／ ");
+  console.log("Connected to MySQL in AWS RDS (＾▽＾)／ ");
 });
 
 export default promisePool;
