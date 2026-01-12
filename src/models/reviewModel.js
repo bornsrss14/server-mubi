@@ -1,6 +1,25 @@
 import db from "../config/database.js";
 
 class Review {
+  //obtener reviews de una película específica
+
+  static async getByMovie(id_tmdb, limit = 20, offset = 0) {
+    const sql = `SELECT r.*, u.username, u.profile_pic_url, rt.rating FROM reviews r
+    LEFT JOIN User u ON r.id_user = u.id
+    LEFT JOIN ratings rt ON r.id_rating = rt.id
+    WHERE r.id_tmdb = ? 
+    ORDER BY r.created_at DESC LIMIT ? OFFSET ?`;
+    const [rows] = await db.query(sql, [id_tmdb, limit, offset]);
+    return rows;
+    /* reviews todas las columnas, USER username, profile_picture, RATINGS rating */
+  }
+  //para la paginación calculo y devuelvo todos los registros
+  static async countByMovie(id_tmdb) {
+    const sql = `SELECT COUNT(*) as total FROM reviews WHERE id_tmdb =?`;
+    const [rows] = await db.query(sql, [id_tmdb]);
+    return rows[0].total;
+  }
+
   static async addReview(reviewData) {
     const { id_user, id_tmdb, id_rating, review, has_spoilers } = reviewData;
     const sql = `INSERT INTO reviews ( id_user, id_tmdb, id_rating, review, has_spoilers, created_at) VALUES (?,?,?,?,?,NOW())`;

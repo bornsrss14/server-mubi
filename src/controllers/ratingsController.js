@@ -135,3 +135,26 @@ export const getAll = async (req, res) => {
     });
   }
 };
+
+export const getById = async (req, res) => {
+  try {
+    const { id, id_user } = req.params;
+    const existingRecord = await Rating.getByOwnId(id, id_user);
+    if (!existingRecord) {
+      //mensaje de error
+      return res.status(404).json({
+        success: false,
+        message: "Rating Record doesn't exists",
+      });
+    }
+    return res.json({
+      success: true,
+      data: existingRecord,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wron :/",
+    });
+  }
+};

@@ -119,6 +119,6 @@ export const getMovieStatus = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status.json({ error: "Server error, i guess" });
+    res.json({ error: "Server error, i guess" });
   }
 };

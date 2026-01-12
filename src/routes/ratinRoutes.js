@@ -8,7 +8,7 @@ router.post("/", ratingController.addOrUpdateRating);
 /*ambos casos*/
 router.get("/:id_user/:id_tmdb", ratingController.findOneByUserAndMovie);
 router.get("/:id_user", ratingController.getAll);
-
+router.get("/:id/:id_user", ratingController.getById);
 /*caso individual rating */
 router.delete("/:id_user/:id_tmdb", ratingController.deleteRating);
 

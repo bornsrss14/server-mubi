@@ -42,5 +42,11 @@ class Rating {
     const [rows] = await db.query(sql, [id_user]);
     return rows;
   }
+
+  static async getByOwnId(id, id_user) {
+    const sql = `SELECT * FROM ratings WHERE id = ? AND id_user = ? LIMIT 1`;
+    const [rows] = await db.query(sql, [id, id_user]);
+    return rows;
+  }
 }
 export default Rating;

@@ -114,3 +114,35 @@ export const createOrUpdateReview = async (req, res) => {
     res.status(500).json({ success: false, message: "Error", error });
   }
 };
+
+export const getReviewsByMubi = async (req, res) => {
+  try {
+    const { id_tmdb } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const [reviews, total] = await Promise.all([
+      Review.getByMovie(id_tmdb, limit, offset),
+      Review.countByMovie(id_tmdb),
+    ]);
+
+    res.json({
+      success: true,
+      data: reviews,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: offset + reviews.length > total,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching reviews",
+      error: error.message,
+    });
+  }
+};

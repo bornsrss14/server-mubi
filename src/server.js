@@ -7,6 +7,7 @@ import userMoviesRoutes from "./routes/userMoviesRoutes.js";
 import listsRoutes from "./routes/listRouter.js";
 import ratingRoutes from "./routes/ratinRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 
 const app = express();
 console.log("metodos de express");
@@ -26,9 +27,8 @@ app.use("/api/user-movies", userMoviesRoutes);
 app.use("/api/user/lists", listsRoutes);
 app.use("/api/user/ratings", ratingRoutes);
 app.use("/api/user/reviews", reviewRoutes);
-{
-  /* app.use("api/user/review/coments"); */
-}
+app.use("/api/user/reviews/comments", commentRoutes);
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
