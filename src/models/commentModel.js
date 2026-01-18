@@ -8,6 +8,15 @@ class Comment {
     const [rows] = await db.query(sql, [id_review]);
     return rows;
   }
+
+  /*calculate total record count and return all record for pagination*/
+  static async countByReview(id_review) {
+    const sql = `SELECT COUNT(*) as total FROM review_comments 
+    WHERE id_review = ?`;
+    const [rows] = await db.query(sql, [id_review]);
+    return rows[0].total;
+  }
+
   //por el propio id
   static async getByOwnId(id) {
     const sql = `SELECT * FROM review_comments WHERE id = ? LIMIT 1`;
@@ -17,7 +26,7 @@ class Comment {
   //todos los registros existentes de comentarios sin distinción
   static async getAllComments() {
     const [rows] = await db.query(
-      "SELECT * from review_comments ORDER BY id DESC"
+      "SELECT * from review_comments ORDER BY id DESC",
     );
     return rows;
   }
