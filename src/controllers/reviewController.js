@@ -49,10 +49,11 @@ export const getAllByIdUser = async (req, res) => {
 };
 
 /*Valido tres casos de uso:
-1. El review no existe, pero el rating sí
+1. Review doesn't exist, but rating does.
 2.- Neither review record exists nor rating record exists
-3.- El registro de rating existe,  pero el review no, entonces solo se actualiza 
-la entidad de rating, si es necesario, si es requerido*/
+3.- Rating record exists, but review doesn't, therefore it only updates the entity of rating,
+ if it's necessary
+*/
 export const createOrUpdateReview = async (req, res) => {
   try {
     const { id_user, id_tmdb, review, has_spoilers, rating } = req.body;
@@ -118,14 +119,30 @@ export const createOrUpdateReview = async (req, res) => {
 export const getReviewsByMubi = async (req, res) => {
   try {
     const { id_tmdb } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 3;
+
+    // rejects concatened strings and number "1024dk", NaN, decimalas, and negative numbers
+    if (!Number.isInteger(page) || page < 1) {
+      throw new Error("Invalid page number");
+    }
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new Error("Invalid limit number");
+    }
     const offset = (page - 1) * limit;
+    console.log("Backend request:", { id_tmdb, page, limit, offset }); //log➜
 
     const [reviews, total] = await Promise.all([
       Review.getByMovie(id_tmdb, limit, offset),
       Review.countByMovie(id_tmdb),
     ]);
+    const hasMore = offset + reviews.length < total;
+    console.log("Backend response:", {
+      reviewsCount: reviews.length,
+      total,
+      offset,
+      hasMore,
+    }); //  Log ➜
 
     res.json({
       success: true,
@@ -135,7 +152,7 @@ export const getReviewsByMubi = async (req, res) => {
         limit,
         total,
         totalPages: Math.ceil(total / limit),
-        hasMore: offset + reviews.length > total,
+        hasMore,
       },
     });
   } catch (error) {

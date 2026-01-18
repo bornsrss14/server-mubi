@@ -43,12 +43,18 @@ export const getAllComments = async (req, res) => {
 };
 
 export const createNew = async (req, res) => {
-  const { id_review, id_user, comment_txt, id_parent } = req.body;
+  const { id_review, id_user, comment_txt, id_parent } = req.body || {};
   //verifico si el usuario existe
   if (!id_user) {
     return res.status(400).json({
       success: false,
-      message: "incomplete data for creating comment",
+      message: "id_user is requiered",
+    });
+  }
+  if (!id_review) {
+    return res.status(400).json({
+      success: false,
+      message: "id_review is required",
     });
   }
   try {
