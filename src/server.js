@@ -21,13 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // mi ruta para usuarios
-app.use("/api/user/reviews/comments", commentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/four", fourFavRoutes);
 app.use("/api/user-movies", userMoviesRoutes);
 app.use("/api/user/lists", listsRoutes);
 app.use("/api/user/ratings", ratingRoutes);
 app.use("/api/user/reviews", reviewRoutes);
+app.use("/api/user/reviews/comments", commentRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

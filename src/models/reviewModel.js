@@ -4,7 +4,8 @@ class Review {
   //obtener reviews de una película específica
 
   static async getByMovie(id_tmdb, limit = 4, offset = 0) {
-    const sql = `SELECT r.*, u.username, u.profile_pic_url, rt.rating FROM reviews r
+    const sql = `SELECT r.*, u.username, u.profile_pic_url, rt.rating 
+    FROM reviews r
     LEFT JOIN User u ON r.id_user = u.id
     LEFT JOIN ratings rt ON r.id_rating = rt.id
     WHERE r.id_tmdb = ? 

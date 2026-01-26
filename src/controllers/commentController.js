@@ -1,15 +1,68 @@
 import Comment from "../models/commentModel.js";
 
-export const getCommentsForReview = async (req, res) => {
+export const getRepliesById = async (req, res) => {
+  try {
+    const { id_comment } = req.params; //parent
+    const replies = await Comment.getRepliesByIdComment(id_comment);
+    return res.json({
+      success: true,
+      message: `All replies associated at ${id_comment} id comment parent`,
+      data: replies,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error while trying to get the replies by id_parent_comment",
+      error: message.error,
+    });
+  }
+};
+
+export const getCommentsByReview = async (req, res) => {
   try {
     const { id_review } = req.params;
-    const comments = await Comment.getByIdReview(id_review);
-    res.json({ success: true, data: comments });
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 3;
+    if (!Number.isInteger(page) || page < 1) {
+      throw new Error("Invalid page number");
+    }
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new Error("Invalit limit number");
+    }
+    const offset = (page - 1) * limit;
+
+    //resolver 2 promesas, 1 devuelve el set de comment
+    // 2.- Devuelve el total de X comments asociados a esa review Xn
+
+    const [comments, total] = await Promise.all([
+      Comment.getByIdReview(id_review, limit, offset),
+      Comment.countByReview(id_review),
+    ]);
+
+    const hasMore = offset + comments.length < total;
+    console.log("Backend comments response:", {
+      commentsCount: comments.length,
+      total, // total de comentarios de esa id_review
+      offset, // salto XnC
+      hasMore, //true or false
+    });
+    //  Log ➜
+    res.json({
+      success: true,
+      data: comments,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Error while trying to get a review by id_review",
-      error: message.error,
+      error: error.message,
     });
   }
 };
@@ -72,7 +125,7 @@ export const createNew = async (req, res) => {
   } catch (error) {
     console.log(
       "something went wrong, trying to add your comment, please try later",
-      error
+      error,
     );
     return res.status(500).json({
       success: false,
