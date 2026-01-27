@@ -82,6 +82,30 @@ class Review {
     const [results] = await db.query(sql, [id_user]);
     return results;
   }
+
+  static async getByMovieAndReview(id_tmdb, id) {
+    const sql = `r.id,
+r.id_user,
+r.id_tmdb,
+r.id_rating,
+r.review,
+r.created_at,
+u.id,
+u.username,
+u.profile_pic_url,
+rt.id,
+rt.id_user,
+rt.id_tmdb,
+rt.rating 
+FROM reviews r 
+LEFT JOIN User u
+ON r.id_user = u.id 
+LEFT JOIN ratings rt 
+ON r.id_user = rt.id_user 
+WHERE r.id_tmdb AND rt.id_tmdb = ? AND r.id = ?;`;
+    const [rows] = await db.query(sql, [id_tmdb, id]);
+    return rows;
+  }
 }
 
 export default Review;
