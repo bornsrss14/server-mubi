@@ -84,7 +84,7 @@ class Review {
   }
 
   static async getByMovieAndReview(id_tmdb, id) {
-    const sql = `r.id,
+    const sql = `SELECT r.id,
 r.id_user,
 r.id_tmdb,
 r.id_rating,
@@ -102,9 +102,9 @@ LEFT JOIN User u
 ON r.id_user = u.id 
 LEFT JOIN ratings rt 
 ON r.id_user = rt.id_user 
-WHERE r.id_tmdb AND rt.id_tmdb = ? AND r.id = ?;`;
+WHERE r.id_tmdb AND rt.id_tmdb = ? AND r.id = ?`;
     const [rows] = await db.query(sql, [id_tmdb, id]);
-    return rows;
+    return rows[0];
   }
 }
 

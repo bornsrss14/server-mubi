@@ -167,12 +167,13 @@ export const getReviewsByMubi = async (req, res) => {
 export const getByMovieAndId = async (req, res) => {
   try {
     const { id_tmdb, id } = req.params;
+
     const reviewDetail = await Review.getByMovieAndReview(id_tmdb, id);
     res.json({ success: true, data: reviewDetail });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Error fetching review detail from the movie ${id_tmdb}`,
+      message: "Error fetching review detail",
       error: error.message,
     });
   }

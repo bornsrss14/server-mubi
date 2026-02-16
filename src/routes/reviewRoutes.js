@@ -12,4 +12,7 @@ router.delete("/", reviewRoutes.deleteByUserAndTmdbId);
 /*Obtengo las reviews de X_id_tmdb pero con info para paginación*/
 router.get("/movie/:id_tmdb", reviewRoutes.getReviewsByMubi);
 router.get("/movie/search/:id_tmdb", reviewRoutes.getReviewsByMubi);
+
+/*get by params: id_tmdb and the own id of the review id */
+router.get("/details/:id_tmdb/:id", reviewRoutes.getByMovieAndId); //id_review getByMovieAndId
 export default router;

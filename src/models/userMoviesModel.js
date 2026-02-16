@@ -6,7 +6,7 @@ class UserMoviesFav {
   static async getLikedMovies(id_user) {
     const [rows] = await db.query(
       `SELECT id_tmdb, created_at from user_movies WHERE id_user = ? AND liked = 1`,
-      [id_user]
+      [id_user],
     );
     return rows;
   }
@@ -14,7 +14,7 @@ class UserMoviesFav {
   static async getWatchedMovies(id_user) {
     const [rows] = await db.query(
       `SELECT id_tmdb, created_at from user_movies WHERE id_user = ? AND watched = 1`,
-      [id_user]
+      [id_user],
     );
     return rows;
   }
@@ -22,7 +22,7 @@ class UserMoviesFav {
   static async getToWatchMovies(id_user) {
     const [rows] = await db.query(
       `SELECT id_tmdb , created_at from user_movies WHERE id_user = ? AND to_watch = 1`,
-      [id_user]
+      [id_user],
     );
     return rows;
   }
@@ -39,7 +39,7 @@ class UserMoviesFav {
       `
       SELECT id_tmdb, liked, watched, to_watch, created_at FROM user_movies WHERE id_user = ? 
       `,
-      [id_user]
+      [id_user],
     );
 
     return rows;
@@ -60,7 +60,7 @@ class UserMoviesFav {
         field === "liked" ? 1 : 0,
         field === "watched" ? 1 : 0,
         field === "to_watch" ? 1 : 0,
-      ]
+      ],
     );
 
     return result;
@@ -72,7 +72,7 @@ class UserMoviesFav {
       `UPDATE user_movies
        SET ${field} = 0
        WHERE id_user = ? AND id_tmdb = ?`,
-      [id_user, id_tmdb]
+      [id_user, id_tmdb],
     );
 
     const [deleted] = await db.query(
@@ -84,7 +84,7 @@ class UserMoviesFav {
         AND watched = 0
         AND to_watch = 0
       `,
-      [id_user, id_tmdb]
+      [id_user, id_tmdb],
     );
     return deleted;
   }
@@ -95,7 +95,7 @@ class UserMoviesFav {
       `UPDATE user_movies
        SET ${field} = ?
        WHERE id_user = ? AND id_tmdb = ?`,
-      [value, id_user, id_tmdb]
+      [value, id_user, id_tmdb],
     );
     if (result.affectedRows === 0) {
       throw new Error("Record not updated");
@@ -108,14 +108,14 @@ class UserMoviesFav {
       `DELETE FROM user_movies 
      WHERE id_user = ? AND id_tmdb = ?
        AND liked = 0 AND watched = 0 AND to_watch = 0`,
-      [id_user, id_tmdb]
+      [id_user, id_tmdb],
     );
     return result;
   }
   static async findRecord(id_user, id_tmdb) {
     const [rows] = await db.query(
       "SELECT * from user_movies WHERE id_user = ? AND id_tmdb = ?",
-      [id_user, id_tmdb]
+      [id_user, id_tmdb],
     );
     return rows[0];
   }

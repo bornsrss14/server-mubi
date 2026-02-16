@@ -34,9 +34,10 @@ class User {
       website,
       pronoun,
       location,
+      roles,
     } = userData;
     const [result] = await db.query(
-      "INSERT INTO User ( username, email, password_hash,profile_pic_url, bio, given_name, family_name, website, pronoun, location) VALUES (?,?,?,?, ?,?,?,?,?, ?)",
+      "INSERT INTO User ( username, email, password_hash,profile_pic_url, bio, given_name, family_name, website, pronoun, location,roles) VALUES (?,?,?,?, ?,?,?,?,?, ?,?)",
       [
         username,
         email,
@@ -48,7 +49,8 @@ class User {
         website,
         pronoun,
         location,
-      ]
+        roles,
+      ],
     );
     return result.insertId;
   }
@@ -64,9 +66,11 @@ class User {
       family_name,
       website,
       pronoun,
+      location,
+      roles,
     } = userData;
     const [result] = await db.query(
-      "UPDATE User SET username= ?, email =?, password_hash =?, profile_pic_url =?, bio =?, given_name =?, family_name =?, website =?, pronoun =? WHERE id = ?",
+      "UPDATE User SET username= ?, email =?, password_hash =?, profile_pic_url =?, bio =?, given_name =?, family_name =?, website =?, pronoun =?, location=?, roles =? WHERE id = ?",
       [
         username,
         email,
@@ -77,8 +81,10 @@ class User {
         family_name,
         website,
         pronoun,
+        location,
+        roles,
         id,
-      ]
+      ],
     );
     return result.affectedRows;
   }
@@ -102,6 +108,15 @@ class User {
       username,
     ]);
     return rows[0];
+  }
+
+  static async updateRefreshToken(id_user, refreshToken) {
+    const [rows] = await db.query("UPDATE User set");
+  }
+
+  static async updateRol(id_user, newRole) {
+    const sql = `UPDATE User SET roles = ? where id = ?`;
+    await db.query(sql, [newRole, id_user]);
   }
 }
 

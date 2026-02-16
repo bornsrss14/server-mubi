@@ -4,8 +4,9 @@ Se encarga de aplicar todas las reglas de negocio y validaciones,
  pero no le interesa como recuperar los datos, guardarlos o borrarlos,
   ya que para eso tiene una capa de persistencia
   1.- Aquí no hay reglas ni queries, solo coordinación y respuesta HTTP.*/
-
+import bcrypt from "bcrypt"; //externa
 import User from "../models/userModel.js";
+import ROLES, { PRONOM } from "../config/roles.js";
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.getAllUsers();
@@ -46,31 +47,52 @@ export const addNewUser = async (req, res) => {
       given_name,
       family_name,
       email,
-      password_hash,
-      profile_pic_url,
+      password_hash, // contraseña sin hashear del cliente
+      profile_pic_url = "https://i.pinimg.com/736x/e2/08/5e/e2085eab30c92a83d53a65111f1d5302.jpg",
       bio,
       website,
       pronoun,
       location,
+      roles = ROLES.user,
     } = req.body;
     //validación de campos NOT NULL
+
+    //Aquí voy a hashear la contraseña
+
     if (!username || !given_name || !family_name || !email || !password_hash) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Estos campos son requeridos" });
+      return res.status(400).json({
+        success: false,
+        message: "Username, name, email and password are required",
+      });
     }
 
     //validación de e mail para evitar duplicidad
     const existingUser = await User.findByEmail(email);
     const existingUsername = await User.findByUsername(username);
+
     if (existingUser || existingUsername) {
       return res
-        .status(400)
+        .status(409)
         .json({ success: false, message: "(・・ )? two of me!?" });
     }
-    const userId = await User.addUser(req.body);
+    const hashedPassword = await bcrypt.hash(password_hash, 10);
+    const userId = await User.addUser({
+      username,
+      email,
+      password_hash: hashedPassword,
+      profile_pic_url: profile_pic_url,
+      bio: bio || null,
+      given_name,
+      family_name,
+      website: website || null,
+      pronoun,
+      location: location || null,
+      roles,
+    });
     const newUser = await User.getUserById(userId);
 
+    delete newUser.password_hash;
+    //correct num status to create
     res.status(201).json({
       success: true,
       message: "User added successfully (＾▽＾)",
@@ -103,6 +125,7 @@ export const updateUser = async (req, res) => {
       website,
       pronoun,
       location,
+      roles,
     } = req.body;
 
     //Voy a validar si el usuario que hace la petición existe
