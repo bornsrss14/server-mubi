@@ -29,12 +29,6 @@ app.use("/api/user/ratings", ratingRoutes);
 app.use("/api/user/reviews", reviewRoutes);
 app.use("/api/user/reviews/comments", commentRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Endpoint not found",
-  });
-});
 // rutas de prueba
 app.get("/", (req, res) => {
   res.json({ message: "Mi API está funcionando" });
@@ -52,4 +46,11 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`live server in port ${PORT}`);
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Endpoint not found",
+  });
 });

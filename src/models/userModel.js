@@ -104,7 +104,7 @@ class User {
   // veo necesario implmentar la busqueda de username
 
   static async findByUsername(username) {
-    const [rows] = await db.query("SELECT * FROM User WHERE username =?", [
+    const [rows] = await db.query("SELECT * FROM User WHERE username = ?", [
       username,
     ]);
     return rows[0];

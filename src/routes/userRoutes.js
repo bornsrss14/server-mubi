@@ -12,4 +12,12 @@ router.put("/:id", userController.updateUser);
 /* DELETE user*/
 router.delete("/:id", userController.deleteUser);
 
+/*Buscar User por email */
+
+router.post("/check-email", userController.byEmail);
+/*Buscar User por username*/
+router.post("/check-username", userController.byUsername);
+router.get("/ping", (req, res) => {
+  res.json({ message: "pong" });
+});
 export default router;

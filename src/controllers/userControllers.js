@@ -199,3 +199,60 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
+
+export const byEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      console.log("Debe de ingresar un email válido");
+      return res.status(400).json({
+        message: "email field requiered",
+        success: false,
+      });
+    }
+    const existingEmail = await User.findByEmail(email);
+    if (existingEmail) {
+      return res
+        .status(409)
+        .json({ success: false, message: "email already taken ( ╥ ᴗ ╥ )." });
+    }
+    res.status(200).json({
+      success: true,
+      message: "email available",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "error trying to retrieve this email",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+export const byUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) {
+      console.log("Debes de ingresar un username válido");
+      return res.status(400).json({
+        message: "ingreso de username incorrecto",
+        success: false,
+      });
+    }
+
+    const existingUsername = await User.findByUsername(username);
+    if (existingUsername) {
+      return res
+        .status(409)
+        .json({ success: false, message: "Username already taken ( ╥ ᴗ ╥ )." });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Username available",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error trying to retrieve this username",
+    });
+  }
+};
