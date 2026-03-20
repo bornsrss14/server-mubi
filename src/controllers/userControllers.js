@@ -7,6 +7,7 @@ Se encarga de aplicar todas las reglas de negocio y validaciones,
 import bcrypt from "bcrypt"; //externa
 import User from "../models/userModel.js";
 import ROLES, { PRONOM } from "../config/roles.js";
+const saltRounds = 10;
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.getAllUsers();
@@ -55,6 +56,7 @@ export const addNewUser = async (req, res) => {
       location,
       roles = ROLES.user,
     } = req.body;
+
     //validación de campos NOT NULL
 
     //Aquí voy a hashear la contraseña
@@ -75,7 +77,7 @@ export const addNewUser = async (req, res) => {
         .status(409)
         .json({ success: false, message: "(・・ )? two of me!?" });
     }
-    const hashedPassword = await bcrypt.hash(password_hash, 10);
+    const hashedPassword = await bcrypt.hash(password_hash, saltRounds);
     const userId = await User.addUser({
       username,
       email,

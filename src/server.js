@@ -8,6 +8,7 @@ import listsRoutes from "./routes/listRouter.js";
 import ratingRoutes from "./routes/ratinRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 console.log("metodos de express");
@@ -17,7 +18,7 @@ const PORT = process.env.PORT || 3001;
 
 //Registro mis middleware globales para mi app
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); //build in middleware for json
 app.use(express.urlencoded({ extended: true }));
 
 // mi ruta para usuarios
@@ -28,6 +29,7 @@ app.use("/api/user/lists", listsRoutes);
 app.use("/api/user/ratings", ratingRoutes);
 app.use("/api/user/reviews", reviewRoutes);
 app.use("/api/user/reviews/comments", commentRoutes);
+app.use("/api/users/auth", authRoutes);
 
 // rutas de prueba
 app.get("/", (req, res) => {

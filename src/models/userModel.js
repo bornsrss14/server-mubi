@@ -118,6 +118,12 @@ class User {
     const sql = `UPDATE User SET roles = ? where id = ?`;
     await db.query(sql, [newRole, id_user]);
   }
+  static async updatePwd(password_hash, username) {
+    //aquí ya la recibe en hash "$2b$" para actualizarla
+    const sql = `UPDATE User SET password_hash = ? where username = ?`;
+    await db.query(sql, [password_hash, username]);
+    return result.affectedRows;
+  }
 }
 
 export default User;
