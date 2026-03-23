@@ -9,7 +9,7 @@ import ratingRoutes from "./routes/ratinRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-
+import cookieParser from "cookie-parser";
 const app = express();
 console.log("metodos de express");
 console.log(app);
@@ -17,10 +17,10 @@ console.log(app);
 const PORT = process.env.PORT || 3001;
 
 //Registro mis middleware globales para mi app
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000/", credentials: true }));
 app.use(express.json()); //build in middleware for json
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 // mi ruta para usuarios
 app.use("/api/users", userRoutes);
 app.use("/api/four", fourFavRoutes);

@@ -1,6 +1,9 @@
 import express from "express";
 import * as userController from "../controllers/userControllers.js";
 import verifyJWT from "../middleware/verifyJWT.js";
+{
+  /* router.use(verifyJWT); */
+}
 const router = express.Router();
 
 /*GET /api/users - Get all users */

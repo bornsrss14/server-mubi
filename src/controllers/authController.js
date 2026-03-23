@@ -77,6 +77,8 @@ export const authByNicknameAndPwd = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
+      sameSite: "Lax", //➜ mi cookie va a pasar (viajar) entre dominios //sería "None"
+      secure: false, // ➜ por el momento estoy en localhost http // sería true
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -91,6 +93,38 @@ export const authByNicknameAndPwd = async (req, res) => {
       message: "Internal server error",
     });
   }
+};
+
+//este end point usa la cookie para generar un nuevo accessToken
+export const handleRefreshToken = async (req, res) => {
+  const cookies = req.cookies;
+
+  if (!cookies.jwt) return res.sendStatus(401);
+  const refreshToken = cookies.jwt;
+  jwt.verify(
+    refreshToken,
+    process.dotenv.REFRESH_TOKEN_SECRET,
+    (err, decoded) => {
+      if (err) return res.sendStatus(403);
+      const accessToken = jwt.sign(
+        {
+          userInfo: { username: decoded.username },
+        },
+        process.dotenv.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" },
+      );
+      res.json({ accessToken });
+    },
+  );
+};
+
+//logout — limpiar cookie
+
+export const logout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) return res.sendStatus(204);
+  res.clearCookie("jwt", { httpOnly: true });
+  res.json({ message: "cookie cleared" });
 };
 
 export default authByNicknameAndPwd;
