@@ -68,7 +68,6 @@ export const authByNicknameAndPwd = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" },
     );
-
     const refreshToken = jwt.sign(
       { username: userRecord.username },
       process.env.REFRESH_TOKEN_SECRET,
@@ -100,29 +99,28 @@ export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
 
   if (!cookies.jwt) return res.sendStatus(401);
+  console.log(cookies.jwt);
+
   const refreshToken = cookies.jwt;
-  jwt.verify(
-    refreshToken,
-    process.dotenv.REFRESH_TOKEN_SECRET,
-    (err, decoded) => {
-      if (err) return res.sendStatus(403);
-      const accessToken = jwt.sign(
-        {
-          userInfo: { username: decoded.username },
-        },
-        process.dotenv.ACCESS_TOKEN_SECRET,
-        { expiresIn: "15m" },
-      );
-      res.json({ accessToken });
-    },
-  );
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    const accessToken = jwt.sign(
+      {
+        userInfo: { username: decoded.userInfo.username },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" },
+    );
+    res.json({ accessToken });
+  });
 };
 
 //logout — limpiar cookie
 
 export const logout = async (req, res) => {
+  //on client also delete the accessToken
   const cookies = req.cookies;
-  if (!cookies.jwt) return res.sendStatus(204);
+  if (!cookies.jwt) return res.sendStatus(204); // no content to send back
   res.clearCookie("jwt", { httpOnly: true });
   res.json({ message: "cookie cleared" });
 };

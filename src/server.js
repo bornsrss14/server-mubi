@@ -17,7 +17,7 @@ console.log(app);
 const PORT = process.env.PORT || 3001;
 
 //Registro mis middleware globales para mi app
-app.use(cors({ origin: "http://localhost:3000/", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json()); //build in middleware for json
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
