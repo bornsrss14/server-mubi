@@ -258,3 +258,34 @@ export const byUsername = async (req, res) => {
     });
   }
 };
+
+//devuelve todos los datos del username buscado
+export const findUser = async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) {
+      console.log("Debes de ingresar un username válido");
+      return res.status(400).json({
+        message: "ingreso de username incorrecto",
+        success: false,
+      });
+    }
+
+    const existingUsername = await User.findByUsername(username);
+    if (!existingUsername) {
+      return res.status(404).json({
+        success: false,
+        message: "This username doesn't exist ( ╥ ᴗ ╥ ).",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: existingUsername,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error trying to retrieve this username",
+    });
+  }
+};

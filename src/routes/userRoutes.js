@@ -21,7 +21,10 @@ router.delete("/:id", userController.deleteUser);
 
 router.post("/check-email", userController.byEmail);
 /*Buscar User por username*/
+router.post("/find-username", userController.findUser);
+
 router.post("/check-username", userController.byUsername);
+
 router.get("/ping", (req, res) => {
   res.json({ message: "pong" });
 });
