@@ -1,31 +1,33 @@
 import express from "express";
 import * as userController from "../controllers/userControllers.js";
 import verifyJWT from "../middleware/verifyJWT.js";
-{
-  /* router.use(verifyJWT); */
-}
+
 const router = express.Router();
 
-/*GET /api/users - Get all users */
-router.get("/", userController.getAllUsers);
-/*GET /api/users/:id */
-router.get("/:id", userController.getUserById);
-/*POST - /api/usuarios - Crear nuevo Usuario */
-router.post("/", userController.addNewUser);
-/*PUT- Actualizar Usuario */
-router.put("/:id", userController.updateUser);
-/* DELETE user*/
-router.delete("/:id", userController.deleteUser);
+/* ---------- RUTAS ESPECÍFICAS  ---------- */
 
-/*Buscar User por email */
-
-router.post("/check-email", userController.byEmail);
-/*Buscar User por username*/
-router.post("/find-username", userController.findUser);
-
-router.post("/check-username", userController.byUsername);
-
+// utilidades
 router.get("/ping", (req, res) => {
   res.json({ message: "pong" });
 });
+
+// validaciones públicas
+router.post("/check-email", userController.byEmail);
+router.post("/check-username", userController.byUsername);
+
+// protegida
+router.post("/find-username", verifyJWT, userController.findUser);
+
+/* ---------- RUTAS GENERALES ---------- */
+
+// colección
+router.get("/", userController.getAllUsers);
+router.post("/", userController.addNewUser);
+
+/* ---------- RUTAS DINÁMICAS (SIEMPRE AL FINAL) ---------- */
+
+router.get("/:id", userController.getUserById);
+router.put("/:id", userController.updateUser);
+router.delete("/:id", userController.deleteUser);
+
 export default router;

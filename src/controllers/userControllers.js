@@ -262,16 +262,19 @@ export const byUsername = async (req, res) => {
 //devuelve todos los datos del username buscado
 export const findUser = async (req, res) => {
   try {
-    const { username } = req.body;
-    if (!username) {
-      console.log("Debes de ingresar un username válido");
-      return res.status(400).json({
-        message: "ingreso de username incorrecto",
-        success: false,
-      });
+    const usernameFromToken = req.user.username;
+    const usernameFromBody = req.body.username;
+
+    //Validación de que los dos coincidan
+    if (!usernameFromBody) {
+      return res.status(400).json({ message: "Username requerido" });
     }
 
-    const existingUsername = await User.findByUsername(username);
+    if (usernameFromToken !== usernameFromBody) {
+      return res.status(403).json({ message: "No autorizado" });
+    }
+
+    const existingUsername = await User.findByUsername(usernameFromToken);
     if (!existingUsername) {
       return res.status(404).json({
         success: false,

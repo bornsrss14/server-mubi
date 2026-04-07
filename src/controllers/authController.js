@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt"; //externo
 
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -27,6 +27,7 @@ export const authByNicknameAndPwd = async (req, res) => {
     const userRecord = await User.findByUsername(username);
 
     if (!userRecord) {
+      //se regres a el login
       return res.status(401).json({
         success: false,
         message: "User not registered",
@@ -64,7 +65,11 @@ export const authByNicknameAndPwd = async (req, res) => {
 
     // MISMO flujo para ambos casos
     const accessToken = jwt.sign(
-      { username: userRecord.username },
+      {
+        userInfo: {
+          username: userRecord.username,
+        },
+      },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" },
     );
@@ -101,18 +106,26 @@ export const handleRefreshToken = async (req, res) => {
   if (!cookies.jwt) return res.sendStatus(401);
   console.log(cookies.jwt);
 
-  const refreshToken = cookies.jwt;
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.sendStatus(403);
-    const accessToken = jwt.sign(
-      {
-        userInfo: { username: decoded.userInfo.username },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" },
-    );
-    res.json({ accessToken });
-  });
+  const refreshToken = cookies.jwt; //mi refresh genera un accessToken
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) return res.sendStatus(403);
+      //Verificar que el usuario siga existiendo
+
+      const userRecord = await User.findByUsername(decoded.username);
+      if (!userRecord) return res.status(401); //usuario eliminado
+      const accessToken = jwt.sign(
+        {
+          userInfo: { username: decoded.username }, //lo envuelvo en un nuevo userInfo para un nuevo accessToken
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" },
+      );
+      res.json({ accessToken });
+    },
+  );
 };
 
 //logout — limpiar cookie
@@ -121,7 +134,7 @@ export const logout = async (req, res) => {
   //on client also delete the accessToken
   const cookies = req.cookies;
   if (!cookies.jwt) return res.sendStatus(204); // no content to send back
-  res.clearCookie("jwt", { httpOnly: true });
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "Lax", secure: false }); //mismos valores que al crear la cookie, update a produccion 🥠
   res.json({ message: "cookie cleared" });
 };
 
