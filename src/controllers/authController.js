@@ -23,9 +23,7 @@ export const authByNicknameAndPwd = async (req, res) => {
         message: "both fields are required",
       });
     }
-
     const userRecord = await User.findByUsername(username);
-
     if (!userRecord) {
       //se regres a el login
       return res.status(401).json({
@@ -33,7 +31,6 @@ export const authByNicknameAndPwd = async (req, res) => {
         message: "User not registered",
       });
     }
-
     let isMatch = false;
 
     // Detectar si es bcrypt
@@ -62,7 +59,6 @@ export const authByNicknameAndPwd = async (req, res) => {
         message: "Incorrect password",
       });
     }
-
     // MISMO flujo para ambos casos
     const accessToken = jwt.sign(
       {
@@ -71,7 +67,7 @@ export const authByNicknameAndPwd = async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "1m" },
     );
     const refreshToken = jwt.sign(
       { username: userRecord.username },
@@ -103,7 +99,7 @@ export const authByNicknameAndPwd = async (req, res) => {
 export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
 
-  if (!cookies.jwt) return res.sendStatus(401);
+  if (!cookies.jwt) return res.sendStatus(401); //make sure i have cookies 🥠🥠.
   console.log(cookies.jwt);
 
   const refreshToken = cookies.jwt; //mi refresh genera un accessToken
@@ -113,17 +109,17 @@ export const handleRefreshToken = async (req, res) => {
     async (err, decoded) => {
       if (err) return res.sendStatus(403);
       //Verificar que el usuario siga existiendo
-
       const userRecord = await User.findByUsername(decoded.username);
       if (!userRecord) return res.status(401); //usuario eliminado
       const accessToken = jwt.sign(
+        //new access token to send because the refresh token has verified refresh token
         {
           userInfo: { username: decoded.username }, //lo envuelvo en un nuevo userInfo para un nuevo accessToken
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "15m" },
+        { expiresIn: "14m" },
       );
-      res.json({ accessToken });
+      res.json({ accessToken }); //lo envía, no lo guarda.
     },
   );
 };

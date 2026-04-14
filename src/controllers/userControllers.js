@@ -1,9 +1,6 @@
 /*A lo que llaman la lógica de negocio
 
-Se encarga de aplicar todas las reglas de negocio y validaciones,
- pero no le interesa como recuperar los datos, guardarlos o borrarlos,
-  ya que para eso tiene una capa de persistencia
-  1.- Aquí no hay reglas ni queries, solo coordinación y respuesta HTTP.*/
+Se encarga de aplicar todas las reglas de negocio y validaciones,pero no le interesa como recuperar los datos, guardarlos o borrarlos,ya que para eso tiene una capa de persistencia 1.- Aquí no hay reglas ni queries, solo coordinación y respuesta HTTP.*/
 import bcrypt from "bcrypt"; //externa
 import User from "../models/userModel.js";
 import ROLES, { PRONOM } from "../config/roles.js";

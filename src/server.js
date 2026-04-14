@@ -29,7 +29,7 @@ app.use("/api/user/lists", listsRoutes);
 app.use("/api/user/ratings", ratingRoutes);
 app.use("/api/user/reviews", reviewRoutes);
 app.use("/api/user/reviews/comments", commentRoutes);
-app.use("/api/users/auth", authRoutes);
+app.use("/api/users/auth", authRoutes); //← Esta es la que ocupo en mi login
 
 // rutas de prueba
 app.get("/", (req, res) => {

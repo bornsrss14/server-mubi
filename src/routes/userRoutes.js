@@ -3,9 +3,6 @@ import * as userController from "../controllers/userControllers.js";
 import verifyJWT from "../middleware/verifyJWT.js";
 
 const router = express.Router();
-
-/* ---------- RUTAS ESPECÍFICAS  ---------- */
-
 // utilidades
 router.get("/ping", (req, res) => {
   res.json({ message: "pong" });
@@ -24,7 +21,7 @@ router.post("/find-username", verifyJWT, userController.findUser);
 router.get("/", userController.getAllUsers);
 router.post("/", userController.addNewUser);
 
-/* ---------- RUTAS DINÁMICAS (SIEMPRE AL FINAL) ---------- */
+/* ---------- RUTAS DINÁMICAS ---------- */
 
 router.get("/:id", userController.getUserById);
 router.put("/:id", userController.updateUser);
